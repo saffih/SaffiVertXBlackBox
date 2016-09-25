@@ -7,9 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-/**
- * Created by saffi on 25/09/16.
- */
+
 public class DataStreamHelperTest {
 	public static ByteArrayInputStream getByteArrayInputStream(String example) {
 		return new ByteArrayInputStream(example.getBytes(StandardCharsets.UTF_8));

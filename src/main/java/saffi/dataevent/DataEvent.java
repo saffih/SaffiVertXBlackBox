@@ -2,9 +2,6 @@ package saffi.dataevent;
 
 import java.io.Serializable;
 
-/**
- * Created by saffi on 21/09/16.
- */
 public class DataEvent implements Serializable {
 
     String event_type;

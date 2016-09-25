@@ -5,9 +5,6 @@ import saffi.helper.StreamHelper;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * Created by saffi on 23/09/16.
- */
 public class DataStreamHelper extends StreamHelper {
     public DataStreamHelper(InputStream stream) {
         super(stream);
