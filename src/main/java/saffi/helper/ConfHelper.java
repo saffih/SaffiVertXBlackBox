@@ -1,5 +1,6 @@
 package saffi.helper;
 
+import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.json.JsonObject;
 
@@ -10,8 +11,19 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class ConfHelper {
-	public static DeploymentOptions getDeploymentOptions() {
-		final JsonObject config = readConfig();
+	public static DeploymentOptions getDeploymentOptions(AbstractVerticle verticle) {
+		JsonObject config = verticle.config();
+		if (config.isEmpty()){
+			config=readConfig();
+		}
+
+		final DeploymentOptions options = new DeploymentOptions();
+		options.setConfig(config);
+		return options;
+	}
+
+	public static DeploymentOptions getDeploymentOptionsForTest() {
+		JsonObject config = readConfig();
 
 		final DeploymentOptions options = new DeploymentOptions();
 		options.setConfig(config);

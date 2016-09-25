@@ -24,7 +24,7 @@ public class JSONPumpTest {
 	@Before
 	public void setUp(TestContext context) throws IOException {
 		vertx = Vertx.vertx();
-		DeploymentOptions options = ConfHelper.getDeploymentOptions();
+		DeploymentOptions options = ConfHelper.getDeploymentOptionsForTest();
 		options.getConfig().put(JSONPump.fakePrefix(), true);
 		vertx.deployVerticle("saffi.verticles.JSONPump", options, context.asyncAssertSuccess());
 	}

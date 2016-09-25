@@ -1,10 +1,8 @@
 package saffi;
 
-import io.vertx.core.AbstractVerticle;
-import io.vertx.core.CompositeFuture;
-import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Future;
+import io.vertx.core.*;
 import io.vertx.core.eventbus.MessageConsumer;
+import saffi.helper.ConfHelper;
 import saffi.verticles.JSONPumpAddress;
 
 import static saffi.helper.ConfHelper.getDeploymentOptions;
@@ -20,7 +18,7 @@ public class JSonBlackBoxRestService  extends AbstractVerticle {
 
 		Future<Void> fut1 = Future.future();
 		vertx.deployVerticle("saffi.verticles.EventSource",
-							getDeploymentOptions(),res -> {
+							getDeploymentOptions(this), res -> {
 			if (res.succeeded()) {
 				eventSourceId = res.result();
 				System.out.println("Deployment id is: " + res.result());
@@ -75,6 +73,10 @@ public class JSonBlackBoxRestService  extends AbstractVerticle {
 		});
 	}
 
-//	public static void main (String []){
-//	}
+	public static void main (String []args){
+
+		Vertx vertx = Vertx.vertx();
+		final DeploymentOptions options = ConfHelper.getDeploymentOptionsForTest();
+		vertx.deployVerticle("saffi.JSonBlackBoxRestService", options);
+	}
 }

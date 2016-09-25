@@ -15,6 +15,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import saffi.helper.ConfHelper;
 import saffi.verticles.RestService;
 
 import java.io.IOException;
@@ -32,7 +33,7 @@ public class JSonBlackBoxRestServiceTest {
 	@Before
 	public void setUp(TestContext context) throws IOException {
 		vertx = Vertx.vertx();
-		final DeploymentOptions options = getDeploymentOptions();
+		final DeploymentOptions options = ConfHelper.getDeploymentOptionsForTest();
 		port = options.getConfig().getInteger("http.port", port);
 		testhost = options.getConfig().getString("test.host", testhost);
 		vertx.deployVerticle("saffi.JSonBlackBoxRestService", options,

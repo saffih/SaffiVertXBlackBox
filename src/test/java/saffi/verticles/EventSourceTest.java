@@ -26,7 +26,7 @@ public class EventSourceTest {
 
 		vertx = Vertx.vertx();
 
-		DeploymentOptions options = ConfHelper.getDeploymentOptions();
+		DeploymentOptions options = ConfHelper.getDeploymentOptionsForTest();
 		options.getConfig().put(EventSource.disablePropertyName(), true);
 
 		vertx.deployVerticle("saffi.verticles.EventSource", options,context.asyncAssertSuccess());

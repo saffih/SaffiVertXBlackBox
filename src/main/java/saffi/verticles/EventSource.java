@@ -44,7 +44,7 @@ public class EventSource extends AbstractVerticle {
 			spawnChild.complete();
 			return;
 		}
-		vertx.deployVerticle("saffi.verticles.JSONPump", getDeploymentOptions(),
+		vertx.deployVerticle("saffi.verticles.JSONPump", getDeploymentOptions(this),
 				ar->spawnChild.complete());
 	}
 

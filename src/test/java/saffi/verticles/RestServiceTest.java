@@ -14,11 +14,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import saffi.helper.ConfHelper;
 
 import java.io.IOException;
 import java.util.HashMap;
-
-import static saffi.helper.ConfHelper.getDeploymentOptions;
 
 @RunWith(VertxUnitRunner.class)
 public class RestServiceTest {
@@ -29,7 +28,7 @@ public class RestServiceTest {
 	@Before
 	public void setUp(TestContext context) throws IOException {
 		vertx = Vertx.vertx();
-		final DeploymentOptions options = getDeploymentOptions();
+		final DeploymentOptions options = ConfHelper.getDeploymentOptionsForTest();
 		PORT = options.getConfig().getInteger("http.port", PORT);
 		testhost = options.getConfig().getString("test.host", testhost);
 		vertx.deployVerticle("saffi.verticles.RestService", options, context.asyncAssertSuccess());
