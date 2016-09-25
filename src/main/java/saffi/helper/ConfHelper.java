@@ -32,7 +32,7 @@ public class ConfHelper {
 
 	public static JsonObject readConfig() {
 		String runDir = System.getProperty("user.dir");
-		final String path = "src/main/conf/json-blackbox.json";
+		final String path = "src/main/conf/blackbox.json";
 		String jsonConf = readFile(path, StandardCharsets.UTF_8);
 		return new JsonObject(jsonConf);
 	}
