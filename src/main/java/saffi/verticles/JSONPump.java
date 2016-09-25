@@ -25,20 +25,19 @@ public class JSONPump extends AbstractVerticle {
 	}
 
 
-	public void start(Future<Void> fut) {
+	public void start(Future<Void> started) {
 		command = config().getString("blackbox", command);
 		pollInterval = config().getInteger("pollInterval", pollInterval);
 
 		Boolean useFake = config().getBoolean(fakePrefix(), false);
 		if (useFake) {
-			spawnFakeBlackBox(fut);
+			spawnFakeBlackBox(started);
 			return;
 		}
 		// since we read in a non blocking way - we do not need to put it within a worker
 		// vertx.executeBlocking(future -> {...}, res -> {});
-		spawnNonBlockingBlackBox(fut);
+		spawnNonBlockingBlackBox(started);
 	}
-
 
 
 	// Optional - called when verticle is undeployed
@@ -47,6 +46,7 @@ public class JSONPump extends AbstractVerticle {
 			fakeConsumer.unregister();
 		}
 	}
+
 
 	private void spawnNonBlockingBlackBox(Future<Void> fut) {
 		pollStreamSendEvents(createStreamHelperAndBlackBox(), vertx);
@@ -71,18 +71,21 @@ public class JSONPump extends AbstractVerticle {
 
 	private void pollStreamSendEvents(IStreamHelper helper, Vertx vertx) {
 		vertx.setPeriodic(pollInterval, id -> {
-			consumeAvailable(helper);
+			while (consumeAvailable(helper)!=null){
+				// do that again
+			}
 		});
 	}
 
-	private void consumeAvailable(IStreamHelper helper) {
+	private String consumeAvailable(IStreamHelper helper) {
 		try {
 			String st = helper.getString();
 			if (st == null) {
-				return;
+				return null;
 			}
 			EventBus eb = vertx.eventBus();
 			eb.publish(JSONPumpAddress.getBroadcast(), st);
+			return st;
 		} catch (IOException e) {
 			// failures should crash and a new one should be created
 			throw new RuntimeException("failed readiing stream ", e);

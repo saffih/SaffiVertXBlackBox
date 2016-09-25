@@ -26,8 +26,8 @@ import static saffi.helper.ConfHelper.getDeploymentOptions;
 public class JSonBlackBoxRestServiceTest {
 
 	Vertx vertx;
-	private int port=RestService.PORT_DEFAULT;
-	private String testhost="localhost";
+	private int port = RestService.PORT_DEFAULT;
+	private String testhost = "localhost";
 
 	@Before
 	public void setUp(TestContext context) throws IOException {
@@ -37,7 +37,7 @@ public class JSonBlackBoxRestServiceTest {
 		testhost = options.getConfig().getString("test.host", testhost);
 		vertx.deployVerticle("saffi.JSonBlackBoxRestService", options,
 				context.asyncAssertSuccess());
-		}
+	}
 
 	@After
 	public void after(TestContext context) {
@@ -103,6 +103,7 @@ public class JSonBlackBoxRestServiceTest {
 		});
 	}
 
+
 	@Test(timeout = 15000)
 	public void blackBoxTypeBazAndBar(TestContext context) {
 		Async async = context.async();
@@ -114,7 +115,7 @@ public class JSonBlackBoxRestServiceTest {
 		pollForEvent("bar", context, foundBar);
 
 		Future<String> foundBazDone = Future.future();
-		Future<String> foundBarDone= Future.future();
+		Future<String> foundBarDone = Future.future();
 
 		foundBar.setHandler(res -> {
 			System.out.println("found bar" + res.result());
@@ -141,22 +142,10 @@ public class JSonBlackBoxRestServiceTest {
 			queryFor(context, found, id);
 		});
 
-		found.setHandler(ar->{
+		found.setHandler(ar -> {
 			vertx.cancelTimer(timerid[0]);
 			success.complete(found.result());
 		});
-	}
-
-	public void queryForBaz(TestContext context, Future<String> success) {
-
-		final String id = "baz";
-		queryFor(context, success, id);
-	}
-
-	public void queryForBar(TestContext context, Future<String> success) {
-
-		final String id = "bar";
-		queryFor(context, success, id);
 	}
 
 	public void queryFor(TestContext context, Future<String> success, String id) {
@@ -172,7 +161,7 @@ public class JSonBlackBoxRestServiceTest {
 				HashMap res = Json.decodeValue(resJson, HashMap.class);
 				final Integer value = (Integer) res.getOrDefault(id, null);
 
-				if (new Integer(1).equals(value)) {
+				if (value!=0) {
 					success.complete(resJson);
 				} else {
 					// waiting - next one might be a match.
