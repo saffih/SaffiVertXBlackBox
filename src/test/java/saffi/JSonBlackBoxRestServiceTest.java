@@ -20,7 +20,7 @@ import saffi.verticles.RestService;
 import java.io.IOException;
 import java.util.HashMap;
 
-import static saffi.verticles.TestHelper.getDeploymentOptions;
+import static saffi.helper.ConfHelper.getDeploymentOptions;
 
 @RunWith(VertxUnitRunner.class)
 public class JSonBlackBoxRestServiceTest {
@@ -35,7 +35,7 @@ public class JSonBlackBoxRestServiceTest {
 		final DeploymentOptions options = getDeploymentOptions();
 		port = options.getConfig().getInteger("http.port", port);
 		testhost = options.getConfig().getString("test.host", testhost);
-		vertx.deployVerticle(new JSonBlackBoxRestService(), options,
+		vertx.deployVerticle("saffi.JSonBlackBoxRestService", options,
 				context.asyncAssertSuccess());
 		}
 

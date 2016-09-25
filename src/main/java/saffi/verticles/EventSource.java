@@ -7,6 +7,7 @@ import saffi.dataevent.DataEvent;
 import saffi.dataevent.DataEventCounter;
 import saffi.dataevent.DataEventHelper;
 
+import static saffi.helper.ConfHelper.getDeploymentOptions;
 import static saffi.verticles.JSONPumpAddress.getBroadcast;
 
 
@@ -43,7 +44,8 @@ public class EventSource extends AbstractVerticle {
 			spawnChild.complete();
 			return;
 		}
-		vertx.deployVerticle("saffi.verticles.JSONPump", ar->spawnChild.complete());
+		vertx.deployVerticle("saffi.verticles.JSONPump", getDeploymentOptions(),
+				ar->spawnChild.complete());
 	}
 
 	private void setupMessageConsumers(Future<Void> fut) {

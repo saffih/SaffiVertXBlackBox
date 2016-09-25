@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import saffi.dataevent.DataEvent;
 import saffi.dataevent.DataEventHelper;
+import saffi.helper.ConfHelper;
 
 import java.io.IOException;
 
@@ -25,10 +26,10 @@ public class EventSourceTest {
 
 		vertx = Vertx.vertx();
 
-		DeploymentOptions options = TestHelper.getDeploymentOptions();
+		DeploymentOptions options = ConfHelper.getDeploymentOptions();
 		options.getConfig().put(EventSource.disablePropertyName(), true);
 
-		vertx.deployVerticle(new EventSource(), options,context.asyncAssertSuccess());
+		vertx.deployVerticle("saffi.verticles.EventSource", options,context.asyncAssertSuccess());
 	}
 
 	@After

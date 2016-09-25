@@ -7,6 +7,8 @@ import io.vertx.core.Future;
 import io.vertx.core.eventbus.MessageConsumer;
 import saffi.verticles.JSONPumpAddress;
 
+import static saffi.helper.ConfHelper.getDeploymentOptions;
+
 public class JSonBlackBoxRestService  extends AbstractVerticle {
 
 	private static String eventSourceId;
@@ -15,8 +17,10 @@ public class JSonBlackBoxRestService  extends AbstractVerticle {
 
 	@Override
 	public void start(Future<Void> started) {
+
 		Future<Void> fut1 = Future.future();
-		vertx.deployVerticle("saffi.verticles.EventSource", res -> {
+		vertx.deployVerticle("saffi.verticles.EventSource",
+							getDeploymentOptions(),res -> {
 			if (res.succeeded()) {
 				eventSourceId = res.result();
 				System.out.println("Deployment id is: " + res.result());
@@ -71,4 +75,6 @@ public class JSonBlackBoxRestService  extends AbstractVerticle {
 		});
 	}
 
+//	public static void main (String []){
+//	}
 }
