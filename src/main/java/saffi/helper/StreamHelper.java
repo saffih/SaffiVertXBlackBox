@@ -4,7 +4,7 @@ import java.io.*;
 
 public class StreamHelper implements IStreamHelper{
 
-    private InputStream stream;
+    private final InputStream stream;
     private BufferedReader br ;
     private StringBuilder sb=new StringBuilder();
     public StreamHelper(InputStream stream)  {

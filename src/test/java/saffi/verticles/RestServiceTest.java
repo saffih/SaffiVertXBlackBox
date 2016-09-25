@@ -18,7 +18,7 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.HashMap;
 
-import static saffi.JSonBlackBoxRestService.getDeploymentOptions;
+import static saffi.verticles.TestHelper.getDeploymentOptions;
 
 @RunWith(VertxUnitRunner.class)
 public class RestServiceTest {

@@ -5,7 +5,6 @@ import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.http.HttpServer;
-import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
@@ -24,9 +23,8 @@ public class JSONPumpTest {
 	@Before
 	public void setUp(TestContext context) throws IOException {
 		vertx = Vertx.vertx();
-		DeploymentOptions options = new DeploymentOptions()
-				.setConfig(new JsonObject().put(JSONPump.fakePrefix(), true)
-				);
+		DeploymentOptions options = TestHelper.getDeploymentOptions();
+		options.getConfig().put(JSONPump.fakePrefix(), true);
 		vertx.deployVerticle(JSONPump.class.getName(), options, context.asyncAssertSuccess());
 	}
 

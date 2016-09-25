@@ -15,9 +15,10 @@ import java.util.ArrayList;
 
 public class JSONPump extends AbstractVerticle {
 
-	final int pollInterval = 1000;
-	private MessageConsumer<Object> fakeConsumer=null;
+	private int pollInterval = 1000;
 	private String command="./generator-linux-amd64";
+
+	private MessageConsumer<Object> fakeConsumer=null;
 
 	public static String fakePrefix(){
 		return "fake."+JSONPump.class.getClass().getSimpleName()	;
@@ -25,12 +26,14 @@ public class JSONPump extends AbstractVerticle {
 
 
 	public void start(Future<Void> fut) {
+		command = config().getString("blackbox", command);
+		pollInterval = config().getInteger("pollInterval", pollInterval);
+
 		Boolean useFake = config().getBoolean(fakePrefix(), false);
 		if (useFake) {
 			spawnFakeBlackBox(fut);
 			return;
 		}
-		command = context.config().getString("blackbox", command);
 		// since we read in a non blocking way - we do not need to put it within a worker
 		// vertx.executeBlocking(future -> {...}, res -> {});
 		spawnNonBlockingBlackBox(fut);
@@ -49,11 +52,6 @@ public class JSONPump extends AbstractVerticle {
 		pollStreamSendEvents(createStreamHelperAndBlackBox(), vertx);
 		fut.complete();
 
-	}
-
-	private void spawnFakeBlackBox(Future<Void> fut) {
-		pollStreamSendEvents(createFakeHelper(), vertx);
-		fut.complete();
 	}
 
 	private IStreamHelper createStreamHelperAndBlackBox() {
@@ -89,6 +87,11 @@ public class JSONPump extends AbstractVerticle {
 			// failures should crash and a new one should be created
 			throw new RuntimeException("failed readiing stream ", e);
 		}
+	}
+
+	private void spawnFakeBlackBox(Future<Void> fut) {
+		pollStreamSendEvents(createFakeHelper(), vertx);
+		fut.complete();
 	}
 
 

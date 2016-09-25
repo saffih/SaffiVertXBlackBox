@@ -13,7 +13,7 @@ public class Counter implements Cloneable {
 
     public void add(String st){
         if (st==null){
-            return ;
+            return;
         }
         counter.put(st, counter.getOrDefault(st, 0)+1);
     }

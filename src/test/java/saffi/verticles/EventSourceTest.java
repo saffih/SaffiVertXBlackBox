@@ -1,9 +1,10 @@
 package saffi.verticles;
 
 
-import io.vertx.core.*;
+import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Future;
+import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
-import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
@@ -21,16 +22,17 @@ public class EventSourceTest {
 	Vertx vertx;
 	@Before
 	public void setUp(TestContext context) throws IOException {
+
 		vertx = Vertx.vertx();
-		DeploymentOptions options = new DeploymentOptions()
-				.setConfig(new JsonObject().put(EventSource.disablePropertyName(), true)
-				);
+
+		DeploymentOptions options = TestHelper.getDeploymentOptions();
+		options.getConfig().put(EventSource.disablePropertyName(), true);
+
 		vertx.deployVerticle(new EventSource(), options,context.asyncAssertSuccess());
 	}
 
 	@After
 	public void after(TestContext context) {
-//		vertx.close();
 
 		vertx.close(context.asyncAssertSuccess());
 	}
@@ -39,6 +41,7 @@ public class EventSourceTest {
 
 	@Test(timeout = 1000)
 	public void testIgnoreBadEventsEvent(TestContext context) {
+
 		Async async = context.async();
 		String st = " \"event_type\": \"baz\", \"data\": \"dolor\", \"timestamp\": 1474449973 }";
 		final EventBus eb = vertx.eventBus();

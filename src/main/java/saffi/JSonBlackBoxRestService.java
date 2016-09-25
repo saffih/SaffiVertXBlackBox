@@ -1,15 +1,11 @@
 package saffi;
 
-import io.vertx.core.*;
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.CompositeFuture;
+import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Future;
 import io.vertx.core.eventbus.MessageConsumer;
-import io.vertx.core.json.JsonObject;
 import saffi.verticles.JSONPumpAddress;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class JSonBlackBoxRestService  extends AbstractVerticle {
 
@@ -28,7 +24,7 @@ public class JSonBlackBoxRestService  extends AbstractVerticle {
 			} else {
 				final String msg = "Deployment failed!";
 				System.out.println(msg);
-				fut1.fail(new RuntimeException(msg));
+				fut1.fail(msg);
 			}
 		});
 
@@ -44,7 +40,7 @@ public class JSonBlackBoxRestService  extends AbstractVerticle {
 				} else {
 					final String msg = "Deployment failed!";
 					System.out.println(msg);
-					started.fail(new RuntimeException(msg));
+					started.fail(msg);
 				}
 			});
 		});
@@ -75,34 +71,4 @@ public class JSonBlackBoxRestService  extends AbstractVerticle {
 		});
 	}
 
-	public static  DeploymentOptions getDeploymentOptions() {
-		String runDir = System.getProperty("user.dir");
-		System.out.println("running dir :"+runDir);
-		final String path = "src/main/conf/json-blackbox.json";
-		String jsonConf = readFile(path, StandardCharsets.UTF_8);
-
-		final DeploymentOptions options = new DeploymentOptions();
-		options.setConfig(new JsonObject(jsonConf));
-		return options;
-	}
-
-
-	private static String readFile(String path, Charset encoding)
-	{
-		byte[] encoded = new byte[0];
-		try {
-			encoded = Files.readAllBytes(Paths.get(path));
-		} catch (IOException e) {
-			throw new RuntimeException("can't find config at  "+path,e);
-		}
-		return new String(encoded, encoding);
-	}
-
-
-
-
-//	public static void main(String[] args) throws InterruptedException {
-//		Future<Void> started = Future.future();
-//
-//	}
 }

@@ -27,9 +27,7 @@ public class EventSource extends AbstractVerticle {
 			startChildProcess(spawnChild);
 		});
 
-		spawnChild.setHandler(v-> {
-			started.complete();
-		});
+		spawnChild.setHandler(started.completer());
 
 		setupMessageConsumers(attachBus);
 

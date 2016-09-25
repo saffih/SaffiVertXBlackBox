@@ -37,12 +37,10 @@ public class RestService extends AbstractVerticle {
 
 
 	public void stop(Future<Void> stopped) {
-		server.close(ar -> {
-			stopped.complete();
-		});
+		server.close(stopped.completer());
 	}
 
-	public Router setRoutes() {
+	private Router setRoutes() {
 		Router router = Router.router(vertx);
 
 		router.get("/words").handler(allWordHandler());
