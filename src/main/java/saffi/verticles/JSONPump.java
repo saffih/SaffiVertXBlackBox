@@ -62,7 +62,7 @@ public class JSONPump extends AbstractVerticle {
 
 	static private InputStream getBlackBoxInputStream() {
 		try {
-		Process process = Runtime.getRuntime().exec("/home/saffi/projects/hwjson/generator-linux-amd64");
+		Process process = Runtime.getRuntime().exec("./generator-linux-amd64");
 			return  process.getInputStream();
 		} catch (IOException e) {
 			// todo notify, respawn - it should be done by the parent
@@ -109,14 +109,4 @@ public class JSONPump extends AbstractVerticle {
 		}
 	}
 
-
-//
-//	public static void main(String[] args) {
-//		Vertx vertx = Vertx.vertx();
-//		EventBus eb = vertx.eventBus();
-//		eb.consumer(JSONPumpAddress.getBroadcast(), message -> {
-//			System.out.println("I have received a message: " + message.body());
-//		});
-//		vertx.deployVerticle(new JSONPump());
-//	}
 }

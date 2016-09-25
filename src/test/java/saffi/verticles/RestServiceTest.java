@@ -7,7 +7,6 @@ import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.json.Json;
-import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
@@ -19,18 +18,18 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.HashMap;
 
+import static saffi.JSonBlackBoxRestService.getDeploymentOptions;
+
 @RunWith(VertxUnitRunner.class)
 public class RestServiceTest {
 	Vertx vertx;
-	final int PORT = 8081;
+	private Integer PORT;
 
 	@Before
 	public void setUp(TestContext context) throws IOException {
 		vertx = Vertx.vertx();
-		DeploymentOptions options = new DeploymentOptions()
-				.setConfig(new JsonObject().put("http.port", PORT)
-				);
-
+		final DeploymentOptions options = getDeploymentOptions();
+		PORT = RestService.getPort(options.getConfig());
 		vertx.deployVerticle(new RestService(), options, context.asyncAssertSuccess());
 		System.out.print("up");
 	}

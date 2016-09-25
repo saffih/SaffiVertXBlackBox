@@ -1,4 +1,4 @@
 {
-  "http.port": 8080,
+  "http.port": 8055,
   "baseURI": "http://localhost"
 }

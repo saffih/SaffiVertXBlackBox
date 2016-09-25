@@ -24,7 +24,7 @@ public class EventSource extends AbstractVerticle {
 		Future<Void> spawnChild = Future.future();
 
 		attachBus.setHandler(v->{
-			setupChildProcess(spawnChild);
+			startChildProcess(spawnChild);
 		});
 
 		spawnChild.setHandler(v-> {
@@ -39,13 +39,13 @@ public class EventSource extends AbstractVerticle {
 		return "disable." + EventSource.class.getSimpleName();
 	}
 
-	private void setupChildProcess(Future<Void> spawnChild) {
+	private void startChildProcess(Future<Void> spawnChild) {
 		Boolean useFakeStream = config().getBoolean(disablePropertyName(), false);
 		if (useFakeStream) {
 			spawnChild.complete();
 			return;
 		}
-		vertx.deployVerticle(new JSONPump(), ar->spawnChild.complete());
+		vertx.deployVerticle("saffi.verticles.JSONPump", ar->spawnChild.complete());
 	}
 
 	private void setupMessageConsumers(Future<Void> fut) {
@@ -90,13 +90,4 @@ public class EventSource extends AbstractVerticle {
 		eventAllConsumer.unregister();
 	}
 
-
-//	public static void main(String[] args) {
-//		Vertx vertx = Vertx.vertx();
-//		vertx.deployVerticle(new EventSource());
-//		vertx.deployVerticle(new RestService());
-//		vertx.eventBus().consumer(getBroadcast(), message -> {
-//			System.out.println("I have received a message: " + message.body());
-//		});
-//	}
 }
