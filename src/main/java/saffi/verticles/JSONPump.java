@@ -66,7 +66,7 @@ public class JSONPump extends AbstractVerticle {
 			return  process.getInputStream();
 		} catch (IOException e) {
 			// todo notify, respawn - it should be done by the parent
-			throw new RuntimeException("spown failed", e);
+			throw new RuntimeException("spawn failed", e);
 		}
 	}
 

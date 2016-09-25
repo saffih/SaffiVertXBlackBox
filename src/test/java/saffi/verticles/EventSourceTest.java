@@ -130,4 +130,66 @@ public class EventSourceTest {
 		fut1.complete();
 	}
 
+
+
+	@Test(timeout = 1000L)
+	public void testAllEvents(TestContext context) {
+		Async async = context.async();
+		String st = "{ \"event_type\": \"baz\", \"data\": \"dolor\", \"timestamp\": 1474449973 }";
+		final EventBus eb = vertx.eventBus();
+
+		Future<Void> fut1 = Future.future();
+		Future<Void> fut2 = Future.future();
+
+		fut1.setHandler( v-> {
+			eb.send(EventSourceAddress.getEventAll(), "",
+					reply -> {
+						context.assertEquals("{}", reply.result().body());
+						eb.publish(JSONPumpAddress.getBroadcast(), st);
+						fut2.complete();
+					});
+		});
+
+		fut2.setHandler(v->{
+			eb.send(EventSourceAddress.getEventAll(), "",
+					reply -> {
+						context.assertEquals("{\"baz\":1}", reply.result().body());
+						async.complete();
+					});
+		});
+
+		fut1.complete();
+	}
+
+
+	@Test(timeout = 1000L)
+	public void testAllWords(TestContext context) {
+		Async async = context.async();
+		String st = "{ \"event_type\": \"baz\", \"data\": \"dolor\", \"timestamp\": 1474449973 }";
+		final EventBus eb = vertx.eventBus();
+
+		Future<Void> fut1 = Future.future();
+		Future<Void> fut2 = Future.future();
+
+		fut1.setHandler( v-> {
+			eb.send(EventSourceAddress.getWordAll(), "",
+					reply -> {
+						context.assertEquals("{}", reply.result().body());
+						eb.publish(JSONPumpAddress.getBroadcast(), st);
+						fut2.complete();
+					});
+		});
+
+		fut2.setHandler(v->{
+			eb.send(EventSourceAddress.getWordAll(), "",
+					reply -> {
+						context.assertEquals("{\"dolor\":1}", reply.result().body());
+						async.complete();
+					});
+		});
+
+		fut1.complete();
+	}
+
+
 }
