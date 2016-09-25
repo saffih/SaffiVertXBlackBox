@@ -8,6 +8,8 @@ import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.json.Json;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
@@ -21,10 +23,9 @@ import saffi.verticles.RestService;
 import java.io.IOException;
 import java.util.HashMap;
 
-import static saffi.helper.ConfHelper.getDeploymentOptions;
-
 @RunWith(VertxUnitRunner.class)
 public class JSonBlackBoxRestServiceTest {
+	Logger logger = LoggerFactory.getLogger(JSonBlackBoxRestServiceTest.class);
 
 	Vertx vertx;
 	private int port = RestService.PORT_DEFAULT;

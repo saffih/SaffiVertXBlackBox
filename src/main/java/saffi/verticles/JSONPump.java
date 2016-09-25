@@ -5,6 +5,8 @@ import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.MessageConsumer;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import saffi.dataevent.DataStreamHelper;
 import saffi.helper.IStreamHelper;
 
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 
 
 public class JSONPump extends AbstractVerticle {
+	Logger logger = LoggerFactory.getLogger(JSONPump.class);
 
 	private int pollInterval = 100;
 	private String command="./generator-linux-amd64";
@@ -62,10 +65,15 @@ public class JSONPump extends AbstractVerticle {
 	private InputStream getBlackBoxInputStream() {
 		try {
 		Process process = Runtime.getRuntime().exec(command);
+			if (!process.isAlive()){
+				throw new RuntimeException("process execute: "+command);
+			}
 			return  process.getInputStream();
 		} catch (IOException e) {
 			// todo notify, respawn - it should be done by the parent
-			throw new RuntimeException("spawn failed", e);
+			final String message = "spawn failed:" + command;
+			logger.fatal(message, e);
+			throw new RuntimeException(message, e);
 		}
 	}
 

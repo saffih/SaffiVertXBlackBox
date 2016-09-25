@@ -49,7 +49,6 @@ public class RestServiceTest {
 		HttpClient client = vertx.createHttpClient();
 		final String id = "ping";
 		final int cnt = 4;
-		HttpClientRequest req = client.get(PORT, testhost, "/word/"+id);
 
 		EventBus eb = vertx.eventBus();
 		eb.consumer( EventSourceAddress.getWordQuery(), message->
@@ -58,6 +57,8 @@ public class RestServiceTest {
 			message.reply(cnt);
 		});
 
+		HttpClientRequest req = client.get(PORT, testhost, "/word/"+id);
+
 		req.exceptionHandler(err -> context.fail(err.getMessage()));
 		req.handler(resp -> {
 			context.assertEquals(200, resp.statusCode());
@@ -65,8 +66,9 @@ public class RestServiceTest {
 				String resJson = new String(body.getBytes());
 				HashMap res = Json.decodeValue(resJson, HashMap.class);
 				context.assertEquals(cnt, res.get(id));
+				async1.complete();
+
 			});
-			async1.complete();
 		});
 		req.end();
 	}

@@ -7,11 +7,15 @@ import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
 
 public class RestService extends AbstractVerticle {
+	Logger logger = LoggerFactory.getLogger(RestService.class);
+
 	public static final int PORT_DEFAULT = 8080;
 	private EventBus eb;
 	private HttpServer server;

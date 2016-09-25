@@ -2,12 +2,16 @@ package saffi;
 
 import io.vertx.core.*;
 import io.vertx.core.eventbus.MessageConsumer;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import saffi.helper.ConfHelper;
+import saffi.verticles.JSONPump;
 import saffi.verticles.JSONPumpAddress;
 
 import static saffi.helper.ConfHelper.getDeploymentOptions;
 
 public class JSonBlackBoxRestService  extends AbstractVerticle {
+	Logger logger = LoggerFactory.getLogger(JSONPump.class);
 
 	private static String eventSourceId;
 	private static String restServiceId;

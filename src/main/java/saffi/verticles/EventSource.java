@@ -1,8 +1,11 @@
 package saffi.verticles;
 
-import io.vertx.core.*;
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Future;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.MessageConsumer;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import saffi.dataevent.DataEvent;
 import saffi.dataevent.DataEventCounter;
 import saffi.dataevent.DataEventHelper;
@@ -12,6 +15,7 @@ import static saffi.verticles.JSONPumpAddress.getBroadcast;
 
 
 public class EventSource extends AbstractVerticle {
+	Logger logger = LoggerFactory.getLogger(EventSource.class);
 
 	private DataEventCounter counter = new DataEventCounter();
 	private MessageConsumer<Object> brodcastConsumer;
