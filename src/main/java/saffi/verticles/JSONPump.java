@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class JSONPump extends AbstractVerticle {
 
-	private int pollInterval = 1000;
+	private int pollInterval = 100;
 	private String command="./generator-linux-amd64";
 
 	private MessageConsumer<Object> fakeConsumer=null;

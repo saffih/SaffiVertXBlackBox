@@ -3,5 +3,5 @@
   "baseURI": "http://localhost",
   "test.host": "localhost",
   "blackbox": "./generator-linux-amd64",
-  "pollInterval": 1000
+  "pollInterval": 100
 }
