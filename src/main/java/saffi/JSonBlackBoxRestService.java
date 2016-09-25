@@ -27,8 +27,8 @@ public class JSonBlackBoxRestService  extends AbstractVerticle {
 				fut1.complete();
 			} else {
 				final String msg = "Deployment failed!";
-				fut1.fail(msg);
 				System.out.println(msg);
+				fut1.fail(new RuntimeException(msg));
 			}
 		});
 
@@ -40,11 +40,12 @@ public class JSonBlackBoxRestService  extends AbstractVerticle {
 				if (res.succeeded()) {
 					restServiceId = res.result();
 					System.out.println("Deployment id is: " + res.result());
+					started.complete();
 				} else {
-					System.out.println("Deployment failed!");
-					started.failed();
+					final String msg = "Deployment failed!";
+					System.out.println(msg);
+					started.fail(new RuntimeException(msg));
 				}
-				started.complete();
 			});
 		});
 
@@ -59,9 +60,12 @@ public class JSonBlackBoxRestService  extends AbstractVerticle {
 		Future<Void> fut1= Future.future();
 		Future<Void> fut2= Future.future();
 		Future<Void> fut3= Future.future();
+
 		consoleOut.unregister(fut3.completer());
+
 		System.out.println("Undeploy id is: " + restServiceId);
 		vertx.undeploy(restServiceId, fut1.completer());
+
 		System.out.println("Undeploy id is: " + eventSourceId);
 		vertx.undeploy(eventSourceId, fut2.completer());
 

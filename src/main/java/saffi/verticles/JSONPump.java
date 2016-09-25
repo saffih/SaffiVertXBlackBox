@@ -17,6 +17,7 @@ public class JSONPump extends AbstractVerticle {
 
 	final int pollInterval = 1000;
 	private MessageConsumer<Object> fakeConsumer=null;
+	private String command="./generator-linux-amd64";
 
 	public static String fakePrefix(){
 		return "fake."+JSONPump.class.getClass().getSimpleName()	;
@@ -29,7 +30,7 @@ public class JSONPump extends AbstractVerticle {
 			spawnFakeBlackBox(fut);
 			return;
 		}
-
+		command = context.config().getString("blackbox", command);
 		// since we read in a non blocking way - we do not need to put it within a worker
 		// vertx.executeBlocking(future -> {...}, res -> {});
 		spawnNonBlockingBlackBox(fut);
@@ -60,9 +61,9 @@ public class JSONPump extends AbstractVerticle {
 		return new DataStreamHelper(stream);
 	}
 
-	static private InputStream getBlackBoxInputStream() {
+	private InputStream getBlackBoxInputStream() {
 		try {
-		Process process = Runtime.getRuntime().exec("./generator-linux-amd64");
+		Process process = Runtime.getRuntime().exec(command);
 			return  process.getInputStream();
 		} catch (IOException e) {
 			// todo notify, respawn - it should be done by the parent

@@ -12,12 +12,15 @@ import io.vertx.ext.web.RoutingContext;
 
 
 public class RestService extends AbstractVerticle {
+	public static final int PORT_DEFAULT = 8080;
 	private EventBus eb;
 	private HttpServer server;
+	private int port=PORT_DEFAULT;
 
 	@Override
 	public void start(Future<Void> started) {
 		eb = vertx.eventBus();
+		port = context.config().getInteger("http.port", port);
 
 		Future<HttpServer> serverFuture = Future.future();
 		serverFuture.setHandler(
@@ -28,7 +31,7 @@ public class RestService extends AbstractVerticle {
 		Router router = setRoutes();
 
 		server = vertx.createHttpServer().requestHandler(router::accept).listen(
-				getPort(),
+				port,
 				serverFuture.completer());
 	}
 
@@ -99,16 +102,4 @@ public class RestService extends AbstractVerticle {
 		};
 	}
 
-	public Integer getPort() {
-		final JsonObject config = config();
-		return getPort(config);
-
-	}
-
-	public static Integer getPort(JsonObject config) {
-		// Port is specified in the conf file
-		// fallback for conf :
-		final int PORT_DEFAULT = 8080;
-		return config.getInteger("http.port", PORT_DEFAULT);
-	}
 }

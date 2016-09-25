@@ -26,13 +26,15 @@ import static saffi.JSonBlackBoxRestService.getDeploymentOptions;
 public class JSonBlackBoxRestServiceTest {
 
 	Vertx vertx;
-	private int port;
+	private int port=RestService.PORT_DEFAULT;
+	private String testhost="localhost";
 
 	@Before
 	public void setUp(TestContext context) throws IOException {
 		vertx = Vertx.vertx();
 		final DeploymentOptions options = getDeploymentOptions();
-		port = RestService.getPort(options.getConfig());
+		port = options.getConfig().getInteger("http.port", port);
+		testhost = options.getConfig().getString("test.host", testhost);
 		vertx.deployVerticle(new JSonBlackBoxRestService(), options,
 				context.asyncAssertSuccess());
 		}
@@ -43,32 +45,57 @@ public class JSonBlackBoxRestServiceTest {
 	}
 
 
-//	@Test(timeout = 1000)
-//	public void testIntegration(TestContext context) {
-//
-//		Async async1 = context.async();
-//		HttpClient client = vertx.createHttpClient();
-//		final String id = "baz";
-//		HttpClientRequest req = client.get(port, "localhost", "/events");
-//
-//		req.exceptionHandler(err -> context.fail(err.getMessage()));
-//		req.handler(resp -> {
-//			context.assertEquals(200, resp.statusCode());
-//			async1.complete();
-//		});
-//		req.end();
-//	}
+	@Test(timeout = 2000)
+	public void testEvents(TestContext context) {
+
+		Async async1 = context.async();
+		HttpClient client = vertx.createHttpClient();
+		HttpClientRequest req = client.get(port, testhost, "/events");
+
+		req.exceptionHandler(err -> context.fail(err.getMessage()));
+		req.handler(resp -> {
+			context.assertEquals(200, resp.statusCode());
+
+			resp.bodyHandler(body -> {
+				String resJson = new String(body.getBytes());
+				context.assertEquals("{}", resJson);
+				async1.complete();
+			});
+		});
+		req.end();
+	}
+
+
+	@Test(timeout = 2000)
+	public void testWords(TestContext context) {
+
+		Async async1 = context.async();
+		HttpClient client = vertx.createHttpClient();
+		HttpClientRequest req = client.get(port, testhost, "/words");
+
+		req.exceptionHandler(err -> context.fail(err.getMessage()));
+		req.handler(resp -> {
+			context.assertEquals(200, resp.statusCode());
+
+			resp.bodyHandler(body -> {
+				String resJson = new String(body.getBytes());
+				// real app the first event is fast
+//				context.assertEquals("{}", resJson);
+				async1.complete();
+			});
+		});
+		req.end();
+	}
+
 
 	@Test(timeout = 3000)
 	public void blackBoxTypeBaz(TestContext context) {
 		Async async = context.async();
 
 		Future<String> foundBaz = Future.future();
-
 		pollForEvent("baz", context, foundBaz);
 
 		Future<String> foundBazDone = Future.future();
-
 		foundBaz.setHandler(res -> {
 			System.out.println("found baz " + res.result());
 			foundBazDone.complete();
@@ -85,8 +112,6 @@ public class JSonBlackBoxRestServiceTest {
 
 		pollForEvent("baz", context, foundBaz);
 		pollForEvent("bar", context, foundBar);
-
-
 
 		Future<String> foundBazDone = Future.future();
 		Future<String> foundBarDone= Future.future();
@@ -112,15 +137,14 @@ public class JSonBlackBoxRestServiceTest {
 
 		long timerid[] = {0};
 
-		found.setHandler(ar->{
-			vertx.cancelTimer(timerid[0]);
-			success.complete(found.result());
-		});
-
 		timerid[0] = vertx.setPeriodic(100, v -> {
 			queryFor(context, found, id);
 		});
 
+		found.setHandler(ar->{
+			vertx.cancelTimer(timerid[0]);
+			success.complete(found.result());
+		});
 	}
 
 	public void queryForBaz(TestContext context, Future<String> success) {
@@ -137,23 +161,25 @@ public class JSonBlackBoxRestServiceTest {
 
 	public void queryFor(TestContext context, Future<String> success, String id) {
 		HttpClient client = vertx.createHttpClient();
-		HttpClientRequest req = client.get(port, "localhost", "/event/" + id);
+		HttpClientRequest req = client.get(port, testhost, "/event/" + id);
 
 		req.exceptionHandler(err -> context.fail(err.getMessage()));
 		req.handler(resp -> {
 			context.assertEquals(200, resp.statusCode());
+
 			resp.bodyHandler(body -> {
 				String resJson = new String(body.getBytes());
 				HashMap res = Json.decodeValue(resJson, HashMap.class);
 				final Integer value = (Integer) res.getOrDefault(id, null);
+
 				if (new Integer(1).equals(value)) {
 					success.complete(resJson);
 				} else {
+					// waiting - next one might be a match.
 					System.out.print(".");
 				}
 			});
 		});
 		req.end();
 	}
-
 }

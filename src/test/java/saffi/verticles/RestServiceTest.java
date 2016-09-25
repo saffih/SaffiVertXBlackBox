@@ -23,15 +23,16 @@ import static saffi.JSonBlackBoxRestService.getDeploymentOptions;
 @RunWith(VertxUnitRunner.class)
 public class RestServiceTest {
 	Vertx vertx;
-	private Integer PORT;
+	private Integer PORT=RestService.PORT_DEFAULT;
+	private String testhost="localhost";
 
 	@Before
 	public void setUp(TestContext context) throws IOException {
 		vertx = Vertx.vertx();
 		final DeploymentOptions options = getDeploymentOptions();
-		PORT = RestService.getPort(options.getConfig());
+		PORT = options.getConfig().getInteger("http.port", PORT);
+		testhost = options.getConfig().getString("test.host", testhost);
 		vertx.deployVerticle(new RestService(), options, context.asyncAssertSuccess());
-		System.out.print("up");
 	}
 
 	@After
@@ -49,7 +50,7 @@ public class RestServiceTest {
 		HttpClient client = vertx.createHttpClient();
 		final String id = "ping";
 		final int cnt = 4;
-		HttpClientRequest req = client.get(PORT, "localhost", "/word/"+id);
+		HttpClientRequest req = client.get(PORT, testhost, "/word/"+id);
 
 		EventBus eb = vertx.eventBus();
 		eb.consumer( EventSourceAddress.getWordQuery(), message->
@@ -78,7 +79,7 @@ public class RestServiceTest {
 		HttpClient client = vertx.createHttpClient();
 		final String id = "pong";
 		final int cnt = 5;
-		HttpClientRequest req = client.get(PORT, "localhost", "/event/"+id);
+		HttpClientRequest req = client.get(PORT, testhost, "/event/"+id);
 
 		EventBus eb = vertx.eventBus();
 		eb.consumer( EventSourceAddress.getEventQuery(), message->
@@ -101,7 +102,7 @@ public class RestServiceTest {
 		Async async1 = context.async();
 		HttpClient client = vertx.createHttpClient();
 		final String data = "data";
-		HttpClientRequest req = client.get(PORT, "localhost", "/words");
+		HttpClientRequest req = client.get(PORT, testhost, "/words");
 
 		EventBus eb = vertx.eventBus();
 		eb.consumer( EventSourceAddress.getWordAll(), message->
@@ -123,7 +124,7 @@ public class RestServiceTest {
 		Async async1 = context.async();
 		HttpClient client = vertx.createHttpClient();
 		final String data = "data";
-		HttpClientRequest req = client.get(PORT, "localhost", "/events");
+		HttpClientRequest req = client.get(PORT, testhost, "/events");
 
 		EventBus eb = vertx.eventBus();
 		eb.consumer( EventSourceAddress.getEventAll(), message->
