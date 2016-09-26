@@ -11,39 +11,39 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class ConfHelper {
-	public static DeploymentOptions getDeploymentOptions(AbstractVerticle verticle) {
-		JsonObject config = verticle.config();
-		if (config.isEmpty()) {
-			config = readConfig();
-		}
+    public static DeploymentOptions getDeploymentOptions(AbstractVerticle verticle) {
+        JsonObject config = verticle.config();
+        if (config.isEmpty()) {
+            config = readConfig();
+        }
 
-		final DeploymentOptions options = new DeploymentOptions();
-		options.setConfig(config);
-		return options;
-	}
+        final DeploymentOptions options = new DeploymentOptions();
+        options.setConfig(config);
+        return options;
+    }
 
-	public static DeploymentOptions getDeploymentOptionsForTest() {
-		JsonObject config = readConfig();
+    public static DeploymentOptions getDeploymentOptionsForTest() {
+        JsonObject config = readConfig();
 
-		final DeploymentOptions options = new DeploymentOptions();
-		options.setConfig(config);
-		return options;
-	}
+        final DeploymentOptions options = new DeploymentOptions();
+        options.setConfig(config);
+        return options;
+    }
 
-	public static JsonObject readConfig() {
-		String runDir = System.getProperty("user.dir");
-		final String path = "src/main/conf/blackbox.json";
-		String jsonConf = readFile(path, StandardCharsets.UTF_8);
-		return new JsonObject(jsonConf);
-	}
+    public static JsonObject readConfig() {
+        String runDir = System.getProperty("user.dir");
+        final String path = "src/main/conf/blackbox.json";
+        String jsonConf = readFile(path, StandardCharsets.UTF_8);
+        return new JsonObject(jsonConf);
+    }
 
-	private static String readFile(String path, Charset encoding) {
-		byte[] encoded = new byte[0];
-		try {
-			encoded = Files.readAllBytes(Paths.get(path));
-		} catch (IOException e) {
-			throw new RuntimeException("can't find config at  " + path, e);
-		}
-		return new String(encoded, encoding);
-	}
+    private static String readFile(String path, Charset encoding) {
+        byte[] encoded = new byte[0];
+        try {
+            encoded = Files.readAllBytes(Paths.get(path));
+        } catch (IOException e) {
+            throw new RuntimeException("can't find config at  " + path, e);
+        }
+        return new String(encoded, encoding);
+    }
 }

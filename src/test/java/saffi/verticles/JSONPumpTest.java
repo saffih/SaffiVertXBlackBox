@@ -18,37 +18,37 @@ import java.io.IOException;
 
 @RunWith(VertxUnitRunner.class)
 public class JSONPumpTest {
-	Vertx vertx;
-	HttpServer server;
+    Vertx vertx;
+    HttpServer server;
 
-	@Before
-	public void setUp(TestContext context) throws IOException {
-		vertx = Vertx.vertx();
-		DeploymentOptions options = ConfHelper.getDeploymentOptionsForTest();
-		options.getConfig().put(JSONPump.fakePrefix(), true);
-		vertx.deployVerticle("saffi.verticles.JSONPump", options, context.asyncAssertSuccess());
-	}
+    @Before
+    public void setUp(TestContext context) throws IOException {
+        vertx = Vertx.vertx();
+        DeploymentOptions options = ConfHelper.getDeploymentOptionsForTest();
+        options.getConfig().put(JSONPump.fakePrefix(), true);
+        vertx.deployVerticle("saffi.verticles.JSONPump", options, context.asyncAssertSuccess());
+    }
 
-	@After
-	public void after(TestContext context) {
+    @After
+    public void after(TestContext context) {
 
-		vertx.close(context.asyncAssertSuccess());
-	}
+        vertx.close(context.asyncAssertSuccess());
+    }
 
 
-	@Test(timeout = 3000)
-	public void testWithFakeGoodEvent(TestContext context) {
-		Async async = context.async();
+    @Test(timeout = 3000)
+    public void testWithFakeGoodEvent(TestContext context) {
+        Async async = context.async();
 
-		String st = "{ \"event_type\": \"baz\", \"data\": \"dolor\", \"timestamp\": 1474449973 }\n";
-		final String[] message = new String[1];
-		final EventBus eb = vertx.eventBus();
-		eb.consumer(JSONPumpAddress.getBroadcast(), msg -> {
-			message[0] = (String) msg.body();
-			context.assertEquals(st, message[0]);
-			async.complete();
-		});
-		eb.send(JSONPump.fakePrefix(), st);
-	}
+        String st = "{ \"event_type\": \"baz\", \"data\": \"dolor\", \"timestamp\": 1474449973 }\n";
+        final String[] message = new String[1];
+        final EventBus eb = vertx.eventBus();
+        eb.consumer(JSONPumpAddress.getBroadcast(), msg -> {
+            message[0] = (String) msg.body();
+            context.assertEquals(st, message[0]);
+            async.complete();
+        });
+        eb.send(JSONPump.fakePrefix(), st);
+    }
 
 }

@@ -25,152 +25,152 @@ import java.util.HashMap;
 
 @RunWith(VertxUnitRunner.class)
 public class JSonBlackBoxRestServiceTest {
-	Logger logger = LoggerFactory.getLogger(JSonBlackBoxRestServiceTest.class);
+    Logger logger = LoggerFactory.getLogger(JSonBlackBoxRestServiceTest.class);
 
-	Vertx vertx;
-	private int port = RestService.PORT_DEFAULT;
-	private String testhost = "localhost";
+    Vertx vertx;
+    private int port = RestService.PORT_DEFAULT;
+    private String testhost = "localhost";
 
-	@Before
-	public void setUp(TestContext context) throws IOException {
-		vertx = Vertx.vertx();
-		final DeploymentOptions options = ConfHelper.getDeploymentOptionsForTest();
-		port = options.getConfig().getInteger("http.port", port);
-		testhost = options.getConfig().getString("test.host", testhost);
-		vertx.deployVerticle("saffi.JSonBlackBoxRestService", options,
-				context.asyncAssertSuccess());
-	}
+    @Before
+    public void setUp(TestContext context) throws IOException {
+        vertx = Vertx.vertx();
+        final DeploymentOptions options = ConfHelper.getDeploymentOptionsForTest();
+        port = options.getConfig().getInteger("http.port", port);
+        testhost = options.getConfig().getString("test.host", testhost);
+        vertx.deployVerticle("saffi.JSonBlackBoxRestService", options,
+                context.asyncAssertSuccess());
+    }
 
-	@After
-	public void after(TestContext context) {
-		vertx.close(context.asyncAssertSuccess());
-	}
-
-
-	@Test(timeout = 2000)
-	public void testEvents(TestContext context) {
-
-		Async async1 = context.async();
-		HttpClient client = vertx.createHttpClient();
-		HttpClientRequest req = client.get(port, testhost, "/events");
-
-		req.exceptionHandler(err -> context.fail(err.getMessage()));
-		req.handler(resp -> {
-			context.assertEquals(200, resp.statusCode());
-
-			resp.bodyHandler(body -> {
-				String resJson = new String(body.getBytes());
-				context.assertEquals("{}", resJson);
-				async1.complete();
-			});
-		});
-		req.end();
-	}
+    @After
+    public void after(TestContext context) {
+        vertx.close(context.asyncAssertSuccess());
+    }
 
 
-	@Test(timeout = 2000)
-	public void testWords(TestContext context) {
+    @Test(timeout = 2000)
+    public void testEvents(TestContext context) {
 
-		Async async1 = context.async();
-		HttpClient client = vertx.createHttpClient();
-		HttpClientRequest req = client.get(port, testhost, "/words");
+        Async async1 = context.async();
+        HttpClient client = vertx.createHttpClient();
+        HttpClientRequest req = client.get(port, testhost, "/events");
 
-		req.exceptionHandler(err -> context.fail(err.getMessage()));
-		req.handler(resp -> {
-			context.assertEquals(200, resp.statusCode());
+        req.exceptionHandler(err -> context.fail(err.getMessage()));
+        req.handler(resp -> {
+            context.assertEquals(200, resp.statusCode());
 
-			resp.bodyHandler(body -> {
-				String resJson = new String(body.getBytes());
-				// real app the first event is fast
+            resp.bodyHandler(body -> {
+                String resJson = new String(body.getBytes());
+                context.assertEquals("{}", resJson);
+                async1.complete();
+            });
+        });
+        req.end();
+    }
+
+
+    @Test(timeout = 2000)
+    public void testWords(TestContext context) {
+
+        Async async1 = context.async();
+        HttpClient client = vertx.createHttpClient();
+        HttpClientRequest req = client.get(port, testhost, "/words");
+
+        req.exceptionHandler(err -> context.fail(err.getMessage()));
+        req.handler(resp -> {
+            context.assertEquals(200, resp.statusCode());
+
+            resp.bodyHandler(body -> {
+                String resJson = new String(body.getBytes());
+                // real app the first event is fast
 //				context.assertEquals("{}", resJson);
-				async1.complete();
-			});
-		});
-		req.end();
-	}
+                async1.complete();
+            });
+        });
+        req.end();
+    }
 
 
-	@Test(timeout = 3000)
-	public void blackBoxTypeBaz(TestContext context) {
-		Async async = context.async();
+    @Test(timeout = 3000)
+    public void blackBoxTypeBaz(TestContext context) {
+        Async async = context.async();
 
-		Future<String> foundBaz = Future.future();
-		pollForEvent("baz", context, foundBaz);
+        Future<String> foundBaz = Future.future();
+        pollForEvent("baz", context, foundBaz);
 
-		Future<String> foundBazDone = Future.future();
-		foundBaz.setHandler(res -> {
-			System.out.println("found baz " + res.result());
-			foundBazDone.complete();
-			async.complete();
-		});
-	}
+        Future<String> foundBazDone = Future.future();
+        foundBaz.setHandler(res -> {
+            System.out.println("found baz " + res.result());
+            foundBazDone.complete();
+            async.complete();
+        });
+    }
 
 
-	@Test(timeout = 15000)
-	public void blackBoxTypeBazAndBar(TestContext context) {
-		Async async = context.async();
+    @Test(timeout = 15000)
+    public void blackBoxTypeBazAndBar(TestContext context) {
+        Async async = context.async();
 
-		Future<String> foundBaz = Future.future();
-		Future<String> foundBar = Future.future();
+        Future<String> foundBaz = Future.future();
+        Future<String> foundBar = Future.future();
 
-		pollForEvent("baz", context, foundBaz);
-		pollForEvent("bar", context, foundBar);
+        pollForEvent("baz", context, foundBaz);
+        pollForEvent("bar", context, foundBar);
 
-		Future<String> foundBazDone = Future.future();
-		Future<String> foundBarDone = Future.future();
+        Future<String> foundBazDone = Future.future();
+        Future<String> foundBarDone = Future.future();
 
-		foundBar.setHandler(res -> {
-			System.out.println("found bar" + res.result());
-			foundBarDone.complete();
-		});
+        foundBar.setHandler(res -> {
+            System.out.println("found bar" + res.result());
+            foundBarDone.complete();
+        });
 
-		foundBaz.setHandler(res -> {
-			System.out.println("found baz" + res.result());
-			foundBazDone.complete();
-		});
+        foundBaz.setHandler(res -> {
+            System.out.println("found baz" + res.result());
+            foundBazDone.complete();
+        });
 
-		CompositeFuture.join(foundBarDone, foundBazDone).setHandler(res -> {
-			async.complete();
-		});
+        CompositeFuture.join(foundBarDone, foundBazDone).setHandler(res -> {
+            async.complete();
+        });
 
-	}
+    }
 
-	public void pollForEvent(String id, TestContext context, Future<String> success) {
-		Future<String> found = Future.future();
+    public void pollForEvent(String id, TestContext context, Future<String> success) {
+        Future<String> found = Future.future();
 
-		long timerid[] = {0};
+        long timerid[] = {0};
 
-		timerid[0] = vertx.setPeriodic(100, v -> {
-			queryFor(context, found, id);
-		});
+        timerid[0] = vertx.setPeriodic(100, v -> {
+            queryFor(context, found, id);
+        });
 
-		found.setHandler(ar -> {
-			vertx.cancelTimer(timerid[0]);
-			success.complete(found.result());
-		});
-	}
+        found.setHandler(ar -> {
+            vertx.cancelTimer(timerid[0]);
+            success.complete(found.result());
+        });
+    }
 
-	public void queryFor(TestContext context, Future<String> success, String id) {
-		HttpClient client = vertx.createHttpClient();
-		HttpClientRequest req = client.get(port, testhost, "/event/" + id);
+    public void queryFor(TestContext context, Future<String> success, String id) {
+        HttpClient client = vertx.createHttpClient();
+        HttpClientRequest req = client.get(port, testhost, "/event/" + id);
 
-		req.exceptionHandler(err -> context.fail(err.getMessage()));
-		req.handler(resp -> {
-			context.assertEquals(200, resp.statusCode());
+        req.exceptionHandler(err -> context.fail(err.getMessage()));
+        req.handler(resp -> {
+            context.assertEquals(200, resp.statusCode());
 
-			resp.bodyHandler(body -> {
-				String resJson = new String(body.getBytes());
-				HashMap res = Json.decodeValue(resJson, HashMap.class);
-				final Integer value = (Integer) res.getOrDefault(id, null);
+            resp.bodyHandler(body -> {
+                String resJson = new String(body.getBytes());
+                HashMap res = Json.decodeValue(resJson, HashMap.class);
+                final Integer value = (Integer) res.getOrDefault(id, null);
 
-				if (value != 0) {
-					success.complete(resJson);
-				} else {
-					// waiting - next one might be a match.
-					System.out.print(".");
-				}
-			});
-		});
-		req.end();
-	}
+                if (value != 0) {
+                    success.complete(resJson);
+                } else {
+                    // waiting - next one might be a match.
+                    System.out.print(".");
+                }
+            });
+        });
+        req.end();
+    }
 }

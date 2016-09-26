@@ -9,17 +9,17 @@ import java.nio.charset.StandardCharsets;
 
 
 public class DataStreamHelperTest {
-	public static ByteArrayInputStream getByteArrayInputStream(String example) {
-		return new ByteArrayInputStream(example.getBytes(StandardCharsets.UTF_8));
-	}
+    public static ByteArrayInputStream getByteArrayInputStream(String example) {
+        return new ByteArrayInputStream(example.getBytes(StandardCharsets.UTF_8));
+    }
 
-	@Test
-	public void testHelper() throws IOException {
-		String resNull = new DataStreamHelper(getByteArrayInputStream("Hello")).getLine();
-		Assert.assertNull(resNull);
-		String st = "{ \"event_type\": \"baz\", \"data\": \"dolor\", \"timestamp\": 1474449973 }\n";
+    @Test
+    public void testHelper() throws IOException {
+        String resNull = new DataStreamHelper(getByteArrayInputStream("Hello")).getLine();
+        Assert.assertNull(resNull);
+        String st = "{ \"event_type\": \"baz\", \"data\": \"dolor\", \"timestamp\": 1474449973 }\n";
 
-		String res = new DataStreamHelper(getByteArrayInputStream(st)).getLine();
-		Assert.assertNotNull(res);
-	}
+        String res = new DataStreamHelper(getByteArrayInputStream(st)).getLine();
+        Assert.assertNotNull(res);
+    }
 }

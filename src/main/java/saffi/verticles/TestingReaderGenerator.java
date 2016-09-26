@@ -9,33 +9,34 @@ import java.io.IOException;
 
 
 public class TestingReaderGenerator extends ReaderGenerator {
-	private final EventBus eb;
-	private MessageConsumer<Object> fakeConsumer = null;
-	private ArrayStreamLineReader streamLineReader;
+    private final EventBus eb;
+    private MessageConsumer<Object> fakeConsumer = null;
+    private ArrayStreamLineReader streamLineReader;
 
-	public String getLine() throws IOException {
-		return streamLineReader.getLine();
-	}
+    public TestingReaderGenerator(EventBus eb) {
+        this.eb = eb;
+    }
 
-	public TestingReaderGenerator(EventBus eb) {
-		this.eb=eb;
-	}
-	void start(Future<Void> started) {
-		streamLineReader = createFakeStreamLineReader();
-		started.complete();
-	}
+    public String getLine() throws IOException {
+        return streamLineReader.getLine();
+    }
 
-	public void stop(Future<Void> stopped) {
-		fakeConsumer.unregister();
-		stopped.complete();
-	}
+    void start(Future<Void> started) {
+        streamLineReader = createFakeStreamLineReader();
+        started.complete();
+    }
 
-	private ArrayStreamLineReader createFakeStreamLineReader() {
-		final ArrayStreamLineReader fakeHelper = new ArrayStreamLineReader();
-		fakeConsumer = eb.consumer(JSONPump.fakePrefix(), msg -> {
-			fakeHelper.add((String) msg.body());
-		});
-		return fakeHelper;
-	}
+    public void stop(Future<Void> stopped) {
+        fakeConsumer.unregister();
+        stopped.complete();
+    }
+
+    private ArrayStreamLineReader createFakeStreamLineReader() {
+        final ArrayStreamLineReader fakeHelper = new ArrayStreamLineReader();
+        fakeConsumer = eb.consumer(JSONPump.fakePrefix(), msg -> {
+            fakeHelper.add((String) msg.body());
+        });
+        return fakeHelper;
+    }
 
 }
