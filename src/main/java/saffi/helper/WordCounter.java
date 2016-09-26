@@ -22,18 +22,16 @@ public class WordCounter implements Cloneable {
         counter.put(st, counter.getOrDefault(st, 0) + 1);
     }
 
+
     public Integer get(String st) {
         return counter.getOrDefault(st, 0);
     }
 
 
-    public Map<String, Integer> asCollection() {
+    public Map<String, Integer> asMap() {
         return Collections.unmodifiableMap(counter);
     }
 
-    public Map<String, Integer> asMap() {
-        return asCollection();
-    }
 
     public String asJson() {
         Gson g = new Gson();

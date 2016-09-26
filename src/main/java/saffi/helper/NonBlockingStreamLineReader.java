@@ -8,9 +8,9 @@ public class NonBlockingStreamLineReader implements StreamLineReader {
     private StringBuilder sb = new StringBuilder();
 
     public NonBlockingStreamLineReader(InputStream stream) {
-        this.stream = stream;
 
         try {
+            this.stream = stream;
             this.br = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);

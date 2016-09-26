@@ -34,7 +34,7 @@ public class WordCounterTest {
         wordCounter.add("word");
         Assert.assertEquals(1, wordCounter.asMap().get("word").intValue());
 
-        for (Map.Entry<String, Integer> entry : wordCounter.asCollection().entrySet()) {
+        for (Map.Entry<String, Integer> entry : wordCounter.asMap().entrySet()) {
             Assert.assertEquals("word", entry.getKey());
             Assert.assertEquals(1, entry.getValue().intValue());
         }
