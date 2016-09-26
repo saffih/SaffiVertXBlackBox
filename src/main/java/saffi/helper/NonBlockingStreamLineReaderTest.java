@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-public class StreamHelperTest {
+public class NonBlockingStreamLineReaderTest {
 
 	public static ByteArrayInputStream getByteArrayInputStream(String example) {
 		return new ByteArrayInputStream(example.getBytes(StandardCharsets.UTF_8));
@@ -17,8 +17,8 @@ public class StreamHelperTest {
 	@Test
 	public void testEmpty() throws IOException {
 		InputStream stream = getByteArrayInputStream("");
-		StreamHelper sth = new StreamHelper(stream);
-		sth.getString();
+		NonBlockingStreamLineReader sth = new NonBlockingStreamLineReader(stream);
+		sth.getLine();
 	}
 
 	@Test
@@ -33,13 +33,18 @@ public class StreamHelperTest {
 				"{ \"s    ��\n" +
 				"{ \"event_type\": \"bar\", \"data\": \"ipsum\", \"timestamp\": 1474449991 }\n" +
 				"{ \"event_type\": \"baz\", \"data\": \"ipsum\", \"timestamp\": 1474449994 }\n" +
-				"{ \"event_type\": \"bar\", \"d";
+				"last\n"+" ignores";
 		InputStream stream = getByteArrayInputStream(example);
-		StreamHelper sth = new StreamHelper(stream);
-		for (String st; (st = sth.getString()) != null; ) {
-			Assert.assertEquals(st.charAt(0), '{');
-			Assert.assertEquals(st.charAt(st.length() - 1), '}');
+		NonBlockingStreamLineReader sth = new NonBlockingStreamLineReader(stream);
+		int cnt=0;
+		String st;
+		String last="";
+		for (; (st = sth.getLine()) != null; ) {
+			last=st;
+			cnt++;
 		}
+		Assert.assertEquals(cnt, 11);
+		Assert.assertEquals("last\n", last);
 
 	}
 

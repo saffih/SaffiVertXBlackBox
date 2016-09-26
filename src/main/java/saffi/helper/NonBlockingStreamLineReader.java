@@ -1,14 +1,17 @@
 package saffi.helper;
 
+import com.google.gson.Gson;
+
 import java.io.*;
 
-public class StreamHelper implements IStreamHelper {
+public class NonBlockingStreamLineReader implements StreamLineReader {
+	private Gson g=new Gson();
 
 	private final InputStream stream;
 	private BufferedReader br;
 	private StringBuilder sb = new StringBuilder();
 
-	public StreamHelper(InputStream stream) {
+	public NonBlockingStreamLineReader(InputStream stream) {
 		this.stream = stream;
 
 		try {
@@ -20,21 +23,20 @@ public class StreamHelper implements IStreamHelper {
 	}
 
 	@Override
-	public String getString() throws IOException {
+	public String getLine() throws IOException {
+
 		String found = null;
 		// todo use char []
 		while (br.ready()) {
-			sb.append((char) br.read());
+			final char c = (char) br.read();
+			sb.append(c);
+			if (c=='\n'){
+				found = sb.toString();
+				sb = new StringBuilder();
+				return found;
+			}
 		}
-		final int iEnd = sb.indexOf("}");
-		if (iEnd == -1) {
-			return null;
-		}
-		final int iStart = sb.lastIndexOf("{", iEnd);
-		if (iStart != -1) {
-			found = sb.substring(iStart, iEnd + 1);
-		}
-		sb.delete(0, iEnd + 1);
-		return found;
+		return null;
 	}
+
 }

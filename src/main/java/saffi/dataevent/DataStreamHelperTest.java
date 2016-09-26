@@ -15,11 +15,11 @@ public class DataStreamHelperTest {
 
 	@Test
 	public void testHelper() throws IOException {
-		String resNull = new DataStreamHelper(getByteArrayInputStream("Hello")).getString();
+		String resNull = new DataStreamHelper(getByteArrayInputStream("Hello")).getLine();
 		Assert.assertNull(resNull);
-		String st = "{ \"event_type\": \"baz\", \"data\": \"dolor\", \"timestamp\": 1474449973 }";
+		String st = "{ \"event_type\": \"baz\", \"data\": \"dolor\", \"timestamp\": 1474449973 }\n";
 
-		String res = new DataStreamHelper(getByteArrayInputStream(st)).getString();
+		String res = new DataStreamHelper(getByteArrayInputStream(st)).getLine();
 		Assert.assertNotNull(res);
 	}
 }
