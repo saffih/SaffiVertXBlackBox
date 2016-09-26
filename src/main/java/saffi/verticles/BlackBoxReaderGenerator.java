@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-public class ProcessLineStream extends LineStream {
+public class BlackBoxReaderGenerator extends ReaderGenerator {
 	private String command = "./generator-linux-amd64";
 	private DataStreamHelper streamLineReader;
 
@@ -15,7 +15,7 @@ public class ProcessLineStream extends LineStream {
 		return streamLineReader.getLine();
 	}
 
-	public ProcessLineStream(String command) {
+	public BlackBoxReaderGenerator(String command) {
 		this.command=command;
 	}
 

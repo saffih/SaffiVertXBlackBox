@@ -17,7 +17,7 @@ public class JSONPump extends AbstractVerticle {
 	private int pollInterval = 100;
 	private String command = "./generator-linux-amd64";
 
-	private LineStream lineStream = null;
+	private ReaderGenerator readerGenerator = null;
 	private long timerId;
 
 	public static String fakePrefix() {
@@ -30,24 +30,24 @@ public class JSONPump extends AbstractVerticle {
 
 		Boolean useFake = config().getBoolean(fakePrefix(), false);
 		if (useFake) {
-			lineStream = new FakeLineStream(vertx.eventBus());
+			readerGenerator = new TestingReaderGenerator(vertx.eventBus());
 		}
 		else{
 			command = config().getString("blackbox", command);
 
 			// since we read in a non blocking way - we do not need to put it within a worker
 			// vertx.executeBlocking(future -> {...}, res -> {});
-			lineStream = new ProcessLineStream(command);
+			readerGenerator = new BlackBoxReaderGenerator(command);
 		}
-		pollStreamSendEvents(lineStream);
-		lineStream.start(started);
+		pollStreamSendEvents(readerGenerator);
+		readerGenerator.start(started);
 	}
 
 
 	// Optional - called when verticle is undeployed
 	public void stop(Future<Void> stopped) {
 		vertx.cancelTimer(timerId);
-		lineStream.stop(stopped);
+		readerGenerator.stop(stopped);
 	}
 
 	private void pollStreamSendEvents(StreamLineReader streamLineReader) {

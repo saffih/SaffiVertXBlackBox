@@ -7,7 +7,7 @@ import java.util.Collection;
 /**
  * Created by saffi on 26/09/16.
  */
-public class ArrayLineReader implements StreamLineReader {
+public class ArrayStreamLineReader implements StreamLineReader {
 	private ArrayList<String> buffer = new ArrayList<String>();
 
 	public boolean add(String line){
