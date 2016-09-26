@@ -22,8 +22,8 @@ import java.util.HashMap;
 @RunWith(VertxUnitRunner.class)
 public class RestServiceTest {
 	Vertx vertx;
-	private Integer PORT=RestService.PORT_DEFAULT;
-	private String testhost="localhost";
+	private Integer PORT = RestService.PORT_DEFAULT;
+	private String testhost = "localhost";
 
 	@Before
 	public void setUp(TestContext context) throws IOException {
@@ -41,7 +41,6 @@ public class RestServiceTest {
 	}
 
 
-
 	@Test(timeout = 10000)
 	public void testQueryWord(TestContext context) {
 
@@ -51,18 +50,18 @@ public class RestServiceTest {
 		final int cnt = 4;
 
 		EventBus eb = vertx.eventBus();
-		eb.consumer( EventSourceAddress.getWordQuery(), message->
+		eb.consumer(EventSourceAddress.getWordQuery(), message ->
 		{
 			context.assertEquals(id, message.body());
 			message.reply(cnt);
 		});
 
-		HttpClientRequest req = client.get(PORT, testhost, "/word/"+id);
+		HttpClientRequest req = client.get(PORT, testhost, "/word/" + id);
 
 		req.exceptionHandler(err -> context.fail(err.getMessage()));
 		req.handler(resp -> {
 			context.assertEquals(200, resp.statusCode());
-			resp.bodyHandler(body->{
+			resp.bodyHandler(body -> {
 				String resJson = new String(body.getBytes());
 				HashMap res = Json.decodeValue(resJson, HashMap.class);
 				context.assertEquals(cnt, res.get(id));
@@ -80,10 +79,10 @@ public class RestServiceTest {
 		HttpClient client = vertx.createHttpClient();
 		final String id = "pong";
 		final int cnt = 5;
-		HttpClientRequest req = client.get(PORT, testhost, "/event/"+id);
+		HttpClientRequest req = client.get(PORT, testhost, "/event/" + id);
 
 		EventBus eb = vertx.eventBus();
-		eb.consumer( EventSourceAddress.getEventQuery(), message->
+		eb.consumer(EventSourceAddress.getEventQuery(), message ->
 		{
 			context.assertEquals(id, message.body());
 			message.reply(cnt);
@@ -106,7 +105,7 @@ public class RestServiceTest {
 		HttpClientRequest req = client.get(PORT, testhost, "/words");
 
 		EventBus eb = vertx.eventBus();
-		eb.consumer( EventSourceAddress.getWordAll(), message->
+		eb.consumer(EventSourceAddress.getWordAll(), message ->
 		{
 			message.reply(data);
 		});
@@ -128,7 +127,7 @@ public class RestServiceTest {
 		HttpClientRequest req = client.get(PORT, testhost, "/events");
 
 		EventBus eb = vertx.eventBus();
-		eb.consumer( EventSourceAddress.getEventAll(), message->
+		eb.consumer(EventSourceAddress.getEventAll(), message ->
 		{
 			message.reply(data);
 		});

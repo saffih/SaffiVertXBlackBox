@@ -21,6 +21,7 @@ import java.io.IOException;
 @RunWith(VertxUnitRunner.class)
 public class EventSourceTest {
 	Vertx vertx;
+
 	@Before
 	public void setUp(TestContext context) throws IOException {
 
@@ -29,7 +30,7 @@ public class EventSourceTest {
 		DeploymentOptions options = ConfHelper.getDeploymentOptionsForTest();
 		options.getConfig().put(EventSource.disablePropertyName(), true);
 
-		vertx.deployVerticle("saffi.verticles.EventSource", options,context.asyncAssertSuccess());
+		vertx.deployVerticle("saffi.verticles.EventSource", options, context.asyncAssertSuccess());
 	}
 
 	@After
@@ -37,7 +38,6 @@ public class EventSourceTest {
 
 		vertx.close(context.asyncAssertSuccess());
 	}
-
 
 
 	@Test(timeout = 1000)
@@ -49,10 +49,10 @@ public class EventSourceTest {
 
 		eb.send(JSONPumpAddress.getBroadcast(), st);
 		eb.send(EventSourceAddress.getWordQuery(), "baz",
-			reply -> {
-				context.assertEquals(0, reply.result().body());
-				async.complete();
-			});
+				reply -> {
+					context.assertEquals(0, reply.result().body());
+					async.complete();
+				});
 	}
 
 	@Test(timeout = 3000L)
@@ -64,7 +64,7 @@ public class EventSourceTest {
 		Future<Void> fut1 = Future.future();
 		Future<Void> fut2 = Future.future();
 
-		fut1.setHandler( v-> {
+		fut1.setHandler(v -> {
 			eb.send(EventSourceAddress.getEventQuery(), "baz",
 					reply -> {
 						context.assertEquals(0, reply.result().body());
@@ -73,14 +73,13 @@ public class EventSourceTest {
 					});
 		});
 
-		fut2.setHandler(v->{
+		fut2.setHandler(v -> {
 			eb.send(EventSourceAddress.getEventQuery(), "baz",
 					reply -> {
 						context.assertEquals(1, reply.result().body());
 						async.complete();
 					});
 		});
-
 
 
 		fut1.complete();
@@ -94,10 +93,10 @@ public class EventSourceTest {
 
 		eb.send(JSONPumpAddress.getBroadcast(), st);
 		eb.send(EventSourceAddress.getWordQuery(), "baz",
-			reply -> {
-				context.assertEquals(0, reply.result().body());
-				async.complete();
-			});
+				reply -> {
+					context.assertEquals(0, reply.result().body());
+					async.complete();
+				});
 	}
 
 	@Test(timeout = 3000L)
@@ -109,10 +108,10 @@ public class EventSourceTest {
 		Future<Void> fut1 = Future.future();
 		Future<Void> fut2 = Future.future();
 
-		String s="{ \"event_type\": \"baz\", \"data\": \"dolor\", \"timestamp\": 1474449973 }";
+		String s = "{ \"event_type\": \"baz\", \"data\": \"dolor\", \"timestamp\": 1474449973 }";
 		DataEvent de = DataEventHelper.fromJsonSilentFail(s);
 
-		fut1.setHandler( v-> {
+		fut1.setHandler(v -> {
 			eb.send(EventSourceAddress.getEventQuery(), "baz",
 					reply -> {
 						context.assertEquals(0, reply.result().body());
@@ -121,7 +120,7 @@ public class EventSourceTest {
 					});
 		});
 
-		fut2.setHandler(v->{
+		fut2.setHandler(v -> {
 			eb.send(EventSourceAddress.getEventQuery(), "baz",
 					reply -> {
 						context.assertEquals(1, reply.result().body());
@@ -130,10 +129,8 @@ public class EventSourceTest {
 		});
 
 
-
 		fut1.complete();
 	}
-
 
 
 	@Test(timeout = 1000L)
@@ -145,7 +142,7 @@ public class EventSourceTest {
 		Future<Void> fut1 = Future.future();
 		Future<Void> fut2 = Future.future();
 
-		fut1.setHandler( v-> {
+		fut1.setHandler(v -> {
 			eb.send(EventSourceAddress.getEventAll(), "",
 					reply -> {
 						context.assertEquals("{}", reply.result().body());
@@ -154,7 +151,7 @@ public class EventSourceTest {
 					});
 		});
 
-		fut2.setHandler(v->{
+		fut2.setHandler(v -> {
 			eb.send(EventSourceAddress.getEventAll(), "",
 					reply -> {
 						context.assertEquals("{\"baz\":1}", reply.result().body());
@@ -175,7 +172,7 @@ public class EventSourceTest {
 		Future<Void> fut1 = Future.future();
 		Future<Void> fut2 = Future.future();
 
-		fut1.setHandler( v-> {
+		fut1.setHandler(v -> {
 			eb.send(EventSourceAddress.getWordAll(), "",
 					reply -> {
 						context.assertEquals("{}", reply.result().body());
@@ -184,7 +181,7 @@ public class EventSourceTest {
 					});
 		});
 
-		fut2.setHandler(v->{
+		fut2.setHandler(v -> {
 			eb.send(EventSourceAddress.getWordAll(), "",
 					reply -> {
 						context.assertEquals("{\"dolor\":1}", reply.result().body());

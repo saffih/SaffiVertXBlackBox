@@ -19,12 +19,12 @@ public class JSONPump extends AbstractVerticle {
 	Logger logger = LoggerFactory.getLogger(JSONPump.class);
 
 	private int pollInterval = 100;
-	private String command="./generator-linux-amd64";
+	private String command = "./generator-linux-amd64";
 
-	private MessageConsumer<Object> fakeConsumer=null;
+	private MessageConsumer<Object> fakeConsumer = null;
 
-	public static String fakePrefix(){
-		return "fake."+JSONPump.class.getClass().getSimpleName()	;
+	public static String fakePrefix() {
+		return "fake." + JSONPump.class.getClass().getSimpleName();
 	}
 
 
@@ -45,7 +45,7 @@ public class JSONPump extends AbstractVerticle {
 
 	// Optional - called when verticle is undeployed
 	public void stop() {
-		if (fakeConsumer!=null){
+		if (fakeConsumer != null) {
 			fakeConsumer.unregister();
 		}
 	}
@@ -64,11 +64,11 @@ public class JSONPump extends AbstractVerticle {
 
 	private InputStream getBlackBoxInputStream() {
 		try {
-		Process process = Runtime.getRuntime().exec(command);
-			if (!process.isAlive()){
-				throw new RuntimeException("process execute: "+command);
+			Process process = Runtime.getRuntime().exec(command);
+			if (!process.isAlive()) {
+				throw new RuntimeException("process execute: " + command);
 			}
-			return  process.getInputStream();
+			return process.getInputStream();
 		} catch (IOException e) {
 			// todo notify, respawn - it should be done by the parent
 			final String message = "spawn failed:" + command;
@@ -79,7 +79,7 @@ public class JSONPump extends AbstractVerticle {
 
 	private void pollStreamSendEvents(IStreamHelper helper, Vertx vertx) {
 		vertx.setPeriodic(pollInterval, id -> {
-			while (consumeAvailable(helper)!=null){
+			while (consumeAvailable(helper) != null) {
 				// do that again
 			}
 		});
@@ -106,8 +106,8 @@ public class JSONPump extends AbstractVerticle {
 	}
 
 
-	private IStreamHelper  createFakeHelper() {
-		final FakeStreamHelper fakeHelper= new FakeStreamHelper();
+	private IStreamHelper createFakeHelper() {
+		final FakeStreamHelper fakeHelper = new FakeStreamHelper();
 		final EventBus eb = vertx.eventBus();
 		fakeConsumer = eb.consumer(fakePrefix(), msg -> {
 			fakeHelper.buffer.add((String) msg.body());
@@ -115,11 +115,14 @@ public class JSONPump extends AbstractVerticle {
 		return fakeHelper;
 	}
 
-	private class FakeStreamHelper implements IStreamHelper{
-		ArrayList<String> buffer=new ArrayList<String>();
+	private class FakeStreamHelper implements IStreamHelper {
+		ArrayList<String> buffer = new ArrayList<String>();
+
 		@Override
 		public String getString() throws IOException {
-			if (buffer.isEmpty()){return null;}
+			if (buffer.isEmpty()) {
+				return null;
+			}
 			return buffer.remove(0);
 		}
 	}

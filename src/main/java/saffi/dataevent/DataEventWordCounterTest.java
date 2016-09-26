@@ -3,7 +3,7 @@ package saffi.dataevent;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class DataEventCounterTest {
+public class DataEventWordCounterTest {
 	@Test
 	public void testAdd() {
 		DataEvent de = new DataEvent("type", "data", 1L);

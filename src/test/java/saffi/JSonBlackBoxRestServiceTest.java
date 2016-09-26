@@ -163,7 +163,7 @@ public class JSonBlackBoxRestServiceTest {
 				HashMap res = Json.decodeValue(resJson, HashMap.class);
 				final Integer value = (Integer) res.getOrDefault(id, null);
 
-				if (value!=0) {
+				if (value != 0) {
 					success.complete(resJson);
 				} else {
 					// waiting - next one might be a match.

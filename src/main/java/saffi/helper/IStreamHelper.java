@@ -4,5 +4,5 @@ import java.io.IOException;
 
 
 public interface IStreamHelper {
-    String getString() throws IOException;
+	String getString() throws IOException;
 }

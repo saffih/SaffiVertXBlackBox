@@ -14,12 +14,11 @@ import io.vertx.ext.web.RoutingContext;
 
 
 public class RestService extends AbstractVerticle {
-	Logger logger = LoggerFactory.getLogger(RestService.class);
-
 	public static final int PORT_DEFAULT = 8080;
+	Logger logger = LoggerFactory.getLogger(RestService.class);
 	private EventBus eb;
 	private HttpServer server;
-	private int port=PORT_DEFAULT;
+	private int port = PORT_DEFAULT;
 
 	@Override
 	public void start(Future<Void> started) {

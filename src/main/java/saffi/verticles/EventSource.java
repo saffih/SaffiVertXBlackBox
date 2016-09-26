@@ -24,11 +24,15 @@ public class EventSource extends AbstractVerticle {
 	private MessageConsumer<Object> wordAllConsumer;
 	private MessageConsumer<Object> eventAllConsumer;
 
+	public static String disablePropertyName() {
+		return "disable." + EventSource.class.getSimpleName();
+	}
+
 	public void start(Future<Void> started) {
 		Future<Void> attachBus = Future.future();
 		Future<Void> spawnChild = Future.future();
 
-		attachBus.setHandler(v->{
+		attachBus.setHandler(v -> {
 			startChildProcess(spawnChild);
 		});
 
@@ -38,10 +42,6 @@ public class EventSource extends AbstractVerticle {
 
 	}
 
-	public static String disablePropertyName(){
-		return "disable." + EventSource.class.getSimpleName();
-	}
-
 	private void startChildProcess(Future<Void> spawnChild) {
 		Boolean useFakeStream = config().getBoolean(disablePropertyName(), false);
 		if (useFakeStream) {
@@ -49,7 +49,7 @@ public class EventSource extends AbstractVerticle {
 			return;
 		}
 		vertx.deployVerticle("saffi.verticles.JSONPump", getDeploymentOptions(this),
-				ar->spawnChild.complete());
+				ar -> spawnChild.complete());
 	}
 
 	private void setupMessageConsumers(Future<Void> fut) {

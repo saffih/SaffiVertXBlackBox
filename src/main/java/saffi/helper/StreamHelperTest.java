@@ -10,6 +10,10 @@ import java.nio.charset.StandardCharsets;
 
 public class StreamHelperTest {
 
+	public static ByteArrayInputStream getByteArrayInputStream(String example) {
+		return new ByteArrayInputStream(example.getBytes(StandardCharsets.UTF_8));
+	}
+
 	@Test
 	public void testEmpty() throws IOException {
 		InputStream stream = getByteArrayInputStream("");
@@ -37,10 +41,6 @@ public class StreamHelperTest {
 			Assert.assertEquals(st.charAt(st.length() - 1), '}');
 		}
 
-	}
-
-	public static ByteArrayInputStream getByteArrayInputStream(String example) {
-		return new ByteArrayInputStream(example.getBytes(StandardCharsets.UTF_8));
 	}
 
 }

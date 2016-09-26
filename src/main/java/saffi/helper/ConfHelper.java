@@ -13,8 +13,8 @@ import java.nio.file.Paths;
 public class ConfHelper {
 	public static DeploymentOptions getDeploymentOptions(AbstractVerticle verticle) {
 		JsonObject config = verticle.config();
-		if (config.isEmpty()){
-			config=readConfig();
+		if (config.isEmpty()) {
+			config = readConfig();
 		}
 
 		final DeploymentOptions options = new DeploymentOptions();
@@ -37,13 +37,12 @@ public class ConfHelper {
 		return new JsonObject(jsonConf);
 	}
 
-	private static String readFile(String path, Charset encoding)
-	{
+	private static String readFile(String path, Charset encoding) {
 		byte[] encoded = new byte[0];
 		try {
 			encoded = Files.readAllBytes(Paths.get(path));
 		} catch (IOException e) {
-			throw new RuntimeException("can't find config at  "+path,e);
+			throw new RuntimeException("can't find config at  " + path, e);
 		}
 		return new String(encoded, encoding);
 	}
