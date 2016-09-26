@@ -3,16 +3,12 @@ package saffi.helper;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+
+import static saffi.dataevent.DataStreamHelper.getByteArrayInputStream;
 
 public class NonBlockingStreamLineReaderTest {
-
-    public static ByteArrayInputStream getByteArrayInputStream(String example) {
-        return new ByteArrayInputStream(example.getBytes(StandardCharsets.UTF_8));
-    }
 
     @Test
     public void testEmpty() throws IOException {
@@ -43,7 +39,7 @@ public class NonBlockingStreamLineReaderTest {
             last = st;
             cnt++;
         }
-        Assert.assertEquals(cnt, 11);
+        Assert.assertEquals(11, cnt);
         Assert.assertEquals("last\n", last);
 
     }

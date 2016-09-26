@@ -6,6 +6,10 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * For single threaded use.
+ * Iterator of the collection.
+ */
 public class WordCounter implements Cloneable {
 
     // rate is slow enough - we do not need long.

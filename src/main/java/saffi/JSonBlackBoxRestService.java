@@ -16,13 +16,6 @@ public class JSonBlackBoxRestService extends AbstractVerticle {
     Logger logger = LoggerFactory.getLogger(JSONPump.class);
     private MessageConsumer<Object> consoleOut;
 
-    public static void main(String[] args) {
-
-        Vertx vertx = Vertx.vertx();
-        final DeploymentOptions options = ConfHelper.getDeploymentOptionsForTest();
-        vertx.deployVerticle("saffi.JSonBlackBoxRestService", options);
-    }
-
     @Override
     public void start(Future<Void> started) {
 
@@ -79,5 +72,12 @@ public class JSonBlackBoxRestService extends AbstractVerticle {
             System.out.println("Undeployed done");
             stopped.complete();
         });
+    }
+
+    public static void main(String[] args) {
+
+        Vertx vertx = Vertx.vertx();
+        final DeploymentOptions options = ConfHelper.getDeploymentOptionsForTest();
+        vertx.deployVerticle("saffi.JSonBlackBoxRestService", options);
     }
 }

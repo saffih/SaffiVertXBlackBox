@@ -1,12 +1,9 @@
 package saffi.helper;
 
-import com.google.gson.Gson;
-
 import java.io.*;
 
 public class NonBlockingStreamLineReader implements StreamLineReader {
     private final InputStream stream;
-    private Gson g = new Gson();
     private BufferedReader br;
     private StringBuilder sb = new StringBuilder();
 

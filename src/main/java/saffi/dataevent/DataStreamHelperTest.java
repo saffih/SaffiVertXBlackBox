@@ -3,23 +3,19 @@ package saffi.dataevent;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 
 public class DataStreamHelperTest {
-    public static ByteArrayInputStream getByteArrayInputStream(String example) {
-        return new ByteArrayInputStream(example.getBytes(StandardCharsets.UTF_8));
-    }
 
     @Test
     public void testHelper() throws IOException {
-        String resNull = new DataStreamHelper(getByteArrayInputStream("Hello")).getLine();
+        final String hello = "Hello";
+        String resNull = DataStreamHelper.getDataStreamHelper(hello).getLine();
         Assert.assertNull(resNull);
         String st = "{ \"event_type\": \"baz\", \"data\": \"dolor\", \"timestamp\": 1474449973 }\n";
 
-        String res = new DataStreamHelper(getByteArrayInputStream(st)).getLine();
+        String res = DataStreamHelper.getDataStreamHelper(st).getLine();
         Assert.assertNotNull(res);
     }
 }

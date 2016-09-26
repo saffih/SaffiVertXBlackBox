@@ -32,13 +32,11 @@ public class WordCounterTest {
         WordCounter wordCounter = new WordCounter();
 
         wordCounter.add("word");
-        Assert.assertEquals(
-                Math.toIntExact(wordCounter.asMap().get("word"))
-                , 1);
+        Assert.assertEquals(1, wordCounter.asMap().get("word").intValue());
 
         for (Map.Entry<String, Integer> entry : wordCounter.asCollection().entrySet()) {
             Assert.assertEquals("word", entry.getKey());
-            Assert.assertEquals(new Integer(1), entry.getValue());
+            Assert.assertEquals(1, entry.getValue().intValue());
         }
     }
 
