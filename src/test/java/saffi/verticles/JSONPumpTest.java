@@ -39,7 +39,8 @@ public class JSONPumpTest {
 	@Test(timeout = 3000)
 	public void testWithFakeGoodEvent(TestContext context) {
 		Async async = context.async();
-		String st = "{ \"event_type\": \"baz\", \"data\": \"dolor\", \"timestamp\": 1474449973 }";
+
+		String st = "{ \"event_type\": \"baz\", \"data\": \"dolor\", \"timestamp\": 1474449973 }\n";
 		final String[] message = new String[1];
 		final EventBus eb = vertx.eventBus();
 		eb.consumer(JSONPumpAddress.getBroadcast(), msg -> {

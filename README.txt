@@ -1,9 +1,8 @@
 
 # build + tests
-gradle  build
-gradle shadowjar
+gradle clean build shadowjar
 
-java -jar  build/libs/SaffiVertXBlackBox-3.3.3-fat.jar  -conf src/main/conf/json-blackbox.json
+java -jar  build/libs/SaffiVertXBlackBox-3.3.3-fat.jar  -conf src/main/conf/blackbox.json
 
 
 # Coverage by runing all tests
