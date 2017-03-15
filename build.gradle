@@ -20,6 +20,7 @@ dependencies {
     compile "io.vertx:vertx-web:$version"
 
     compile "com.google.code.gson:gson:1.7.2"
+    compile "org.projectlombok:lombok:1.16.14"
 
     // internal dev/learning tests
     compile "junit:junit:4.12"
