@@ -12,7 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import saffi.helper.ConfHelper;
+import saffi.helper.VertXDeploymentOptionsFactory;
 
 import java.io.IOException;
 
@@ -24,7 +24,7 @@ public class JSONPumpTest {
     @Before
     public void setUp(TestContext context) throws IOException {
         vertx = Vertx.vertx();
-        DeploymentOptions options = ConfHelper.getDeploymentOptionsForTest();
+        DeploymentOptions options = VertXDeploymentOptionsFactory.getTestOptions();
         options.getConfig().put(JSONPump.fakePrefix(), true);
         vertx.deployVerticle("saffi.verticles.JSONPump", options, context.asyncAssertSuccess());
     }

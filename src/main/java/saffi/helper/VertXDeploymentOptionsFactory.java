@@ -10,8 +10,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class ConfHelper {
-	public static DeploymentOptions getDeploymentOptions(AbstractVerticle verticle) {
+public class VertXDeploymentOptionsFactory {
+	public static DeploymentOptions getOptions(AbstractVerticle verticle) {
 		JsonObject config = verticle.config();
 		if (config.isEmpty()) {
 			config = readConfig();
@@ -22,7 +22,7 @@ public class ConfHelper {
 		return options;
 	}
 
-	public static DeploymentOptions getDeploymentOptionsForTest() {
+	public static DeploymentOptions getTestOptions() {
 		JsonObject config = readConfig();
 
 		final DeploymentOptions options = new DeploymentOptions();
@@ -30,7 +30,7 @@ public class ConfHelper {
 		return options;
 	}
 
-	public static JsonObject readConfig() {
+	private static JsonObject readConfig() {
 		String runDir = System.getProperty("user.dir");
 		final String path = "src/main/conf/blackbox.json";
 		String jsonConf = readFile(path, StandardCharsets.UTF_8);

@@ -10,7 +10,7 @@ import saffi.dataevent.DataEvent;
 import saffi.dataevent.DataEventCounter;
 import saffi.dataevent.DataEventHelper;
 
-import static saffi.helper.ConfHelper.getDeploymentOptions;
+import static saffi.helper.VertXDeploymentOptionsFactory.getOptions;
 import static saffi.verticles.JSONPumpAddress.getBroadcast;
 
 
@@ -32,9 +32,7 @@ public class EventSource extends AbstractVerticle {
         Future<Void> attachBus = Future.future();
         Future<Void> spawnChild = Future.future();
 
-        attachBus.setHandler(v -> {
-            startChildProcess(spawnChild);
-        });
+        attachBus.setHandler(v -> startChildProcess(spawnChild));
 
         spawnChild.setHandler(started.completer());
 
@@ -48,7 +46,7 @@ public class EventSource extends AbstractVerticle {
             spawnChild.complete();
             return;
         }
-        vertx.deployVerticle("saffi.verticles.JSONPump", getDeploymentOptions(this),
+        vertx.deployVerticle("saffi.verticles.JSONPump", getOptions(this),
                 ar -> spawnChild.complete());
     }
 
@@ -73,13 +71,11 @@ public class EventSource extends AbstractVerticle {
             message.reply(cnt);
         });
 
-        wordAllConsumer = eb.consumer(EventSourceAddress.getWordAll(), message -> {
-            message.reply(counter.getWordCount().asJson());
-        });
+        wordAllConsumer = eb.consumer(EventSourceAddress.getWordAll(),
+                message -> message.reply(counter.getWordCount().asJson()));
 
-        eventAllConsumer = eb.consumer(EventSourceAddress.getEventAll(), message -> {
-            message.reply(counter.getEventCount().asJson());
-        });
+        eventAllConsumer = eb.consumer(EventSourceAddress.getEventAll(),
+                message -> message.reply(counter.getEventCount().asJson()));
 
         // Done setup consumers ready on event bus.
         fut.complete();

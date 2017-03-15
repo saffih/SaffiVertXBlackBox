@@ -4,11 +4,11 @@ import io.vertx.core.*;
 import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import saffi.helper.ConfHelper;
+import saffi.helper.VertXDeploymentOptionsFactory;
 import saffi.verticles.JSONPump;
 import saffi.verticles.JSONPumpAddress;
 
-import static saffi.helper.ConfHelper.getDeploymentOptions;
+import static saffi.helper.VertXDeploymentOptionsFactory.getOptions;
 
 public class JSonBlackBoxRestService extends AbstractVerticle {
     private static String eventSourceId;
@@ -16,12 +16,19 @@ public class JSonBlackBoxRestService extends AbstractVerticle {
     Logger logger = LoggerFactory.getLogger(JSONPump.class);
     private MessageConsumer<Object> consoleOut;
 
+    public static void main(String[] args) {
+
+        Vertx vertx = Vertx.vertx();
+        final DeploymentOptions options = VertXDeploymentOptionsFactory.getTestOptions();
+        vertx.deployVerticle("saffi.JSonBlackBoxRestService", options);
+    }
+
     @Override
     public void start(Future<Void> started) {
 
         Future<Void> fut1 = Future.future();
         vertx.deployVerticle("saffi.verticles.EventSource",
-                getDeploymentOptions(this), res -> {
+                getOptions(this), res -> {
                     if (res.succeeded()) {
                         eventSourceId = res.result();
                         System.out.println("Deployment id is: " + res.result());
@@ -72,12 +79,5 @@ public class JSonBlackBoxRestService extends AbstractVerticle {
             System.out.println("Undeployed done");
             stopped.complete();
         });
-    }
-
-    public static void main(String[] args) {
-
-        Vertx vertx = Vertx.vertx();
-        final DeploymentOptions options = ConfHelper.getDeploymentOptionsForTest();
-        vertx.deployVerticle("saffi.JSonBlackBoxRestService", options);
     }
 }

@@ -14,7 +14,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import saffi.helper.ConfHelper;
+import saffi.helper.VertXDeploymentOptionsFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -28,7 +28,7 @@ public class RestServiceTest {
     @Before
     public void setUp(TestContext context) throws IOException {
         vertx = Vertx.vertx();
-        final DeploymentOptions options = ConfHelper.getDeploymentOptionsForTest();
+        final DeploymentOptions options = VertXDeploymentOptionsFactory.getTestOptions();
         PORT = options.getConfig().getInteger("http.port", PORT);
         testhost = options.getConfig().getString("test.host", testhost);
         vertx.deployVerticle("saffi.verticles.RestService", options, context.asyncAssertSuccess());
